@@ -1,6 +1,5 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const requestIp = require('request-ip');
 const app = express();
 
 app.set('port', (process.env.PORT || 3000));
@@ -22,30 +21,35 @@ app.get('/', function(req,res){
 	res.render('index');
 });
 
-app.get('/api/whoami/', function(req,res) {
-	console.log(req.headers);
-	const clientIp = requestIp.getClientIp(req); 
-	var language = req.headers['accept-language'];
-	var software = req.headers['user-agent'];
+app.get('/new/:url*', function(req,res){
+	// Create short url, store and display the info.
+	var url = req.url.slice(5);
+	var urlObj = {};
+	if (validateURL(url)) {
+		//confirmed valid now create short url
 
-	//stripping string for language info
-	var comma = language.indexOf(',');
-	language = language.substring(0, comma != -1 ? comma : language.length);
+		//get random num concat to url
+		var num = Math.floor(100000 + Math.random() * 900000).toString().substring(0, 4);
+		var newLink = process.env.APP_URL + num;
 
+		urlObj = {"original_url": url, "short_url":newLink};
+		res.send(urlObj);
+	} else {
+		urlObj = {
+			"error": "Wrong url format, make sure you have a valid protocol and real site."
+		};
+		res.send(urlObj);
+	}
 
-	//stripping string for software info
-	software = software.substring(software.indexOf("(") + 1);
-	var rightParanthese = software.indexOf(')');
-	software = software.substring(0, rightParanthese != -1 ? rightParanthese : software.length);
-
-	//send response
-	res.json({
-		ipaddress:clientIp,
-		language:language,
-		software:software
-	});
 });
 
+//helper functions
+function validateURL(url) {
+	// Checks to see if it is an actual url
+	// Regex from https://gist.github.com/dperini/729294
+	var regex = /^(?:(?:https?|ftp):\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,}))\.?)(?::\d{2,5})?(?:[/?#]\S*)?$/i;
+	return regex.test(url);
+}
 
 // listen for requests
 app.listen(process.env.port || app.get('port'), () => {
