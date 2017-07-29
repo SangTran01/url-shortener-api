@@ -1,25 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>HeaderParser API</title>
+	<title>URL Shortener API</title>
 	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 	<link rel="stylesheet" type="text/css" href="css/styles.css">
 </head>
 <body>
 	<div class="container">
 		<div class="page-header">
-			<h1>Url-shortener API</h1>
+			<h1>URL Shortener Microservice</h1>
 		</div>
 		<div class="page-header">
 			<h3>How to Use:</h3>
 		</div>
-		<p>1) Enter '/api/whoami/' to end of url</p>
-		<p>2) It returns your IP address, language, and software</p>
+		<p>1) Enter '/new/a_website_url/' to end of the url</p>
+		<p>2) It returns your original url and a shortened version</p>
 
 		<div class="page-header">
 			<h3>Example Usage</h3>
 		</div>
-		<code>https://protected-shore-32014.herokuapp.com/api/whoami/</code>
+		<code>https://nameless-wave-51577.herokuapp.com/new/https://www.google.com</code>
+		<br />
+		<code>https://nameless-wave-51577.herokuapp.com/new/https://www.youtube.com</code>
 
 		<div class="page-header">
 			<h3>Example Output</h3>
@@ -27,11 +29,9 @@
 		<code>
 			{	
 				<br />
-				ipaddress: "45.3.11.94",
+				original_url: "https://www.youtube.com",
 				<br />
-				language: "en-US",
-				<br />
-				software: "Windows NT 10.0; Win64; x64"
+				short_url: "http://nameless-wave-51577.herokuapp.com/4566",
 				<br />
 			}		
 		</code>
