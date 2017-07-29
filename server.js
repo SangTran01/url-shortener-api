@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const { URL } = require('url');
 const app = express();
 
 app.set('port', (process.env.PORT || 3000));
@@ -16,24 +17,26 @@ app.use(function(err, req, res, next){
 console.log(err); // to see properties of message in our console
 res.status(422).send({error: err.message});
 });
+	
+
+var num;
+var url;
 
 app.get('/', function(req,res){
 	res.render('index');
 });
 
 app.get('/new/:url*', function(req,res){
-	// Create short url, store and display the info.
-	var baseUrl = req.url.substr(0, req.url.indexOf('new'));
-	console.log('baseUrl');
-	console.log(baseUrl);
 
-	var url = req.url.slice(5);
+	// Create short url, store and display the info.
+	var baseUrl = req.protocol + '://' + req.headers.host + "/";
+	url = req.url.slice(5);
 	var urlObj = {};
 	if (validateURL(url)) {
 		//confirmed valid now create short url
 
 		//get random num concat to url
-		var num = Math.floor(100000 + Math.random() * 900000).toString().substring(0, 4);
+		num = Math.floor(100000 + Math.random() * 900000).toString().substring(0, 4);
 		var newLink = baseUrl + num;
 		console.log('newLink');
 		console.log(newLink);
@@ -48,6 +51,19 @@ app.get('/new/:url*', function(req,res){
 	}
 
 });
+
+app.get('/:num', function(req,res) {
+	console.log(num);
+	console.log(req.params.num);
+	if (req.params.num === num) {
+		res.redirect(url);
+	} else {
+		urlObj = {
+			"error": "Wrong url format, make sure you have a valid protocol and real site."
+		}
+		res.send(urlObj);
+	}
+})
 
 //helper functions
 function validateURL(url) {
