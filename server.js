@@ -23,7 +23,10 @@ app.get('/', function(req,res){
 
 app.get('/new/:url*', function(req,res){
 	// Create short url, store and display the info.
-	var baseUrl = req.url.substr(0, req.url.indexOf('/new'));
+	var baseUrl = req.url.substr(0, req.url.indexOf('new'));
+	console.log('baseUrl');
+	console.log(baseUrl);
+
 	var url = req.url.slice(5);
 	var urlObj = {};
 	if (validateURL(url)) {
@@ -32,6 +35,8 @@ app.get('/new/:url*', function(req,res){
 		//get random num concat to url
 		var num = Math.floor(100000 + Math.random() * 900000).toString().substring(0, 4);
 		var newLink = baseUrl + num;
+		console.log('newLink');
+		console.log(newLink);
 
 		urlObj = {"original_url": url, "short_url":newLink};
 		res.send(urlObj);
